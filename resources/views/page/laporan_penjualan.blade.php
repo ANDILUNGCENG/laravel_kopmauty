@@ -1,0 +1,285 @@
+@extends('template.main')
+@section('title', $title ?? 'Web Kasir')
+
+@section('content')
+    <header class="bg-white shadow">
+        <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8" style="height: 55px; display: flex; align-items: center;">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Laporan Penjualan</li>
+                </ol>
+            </nav>
+        </div>
+    </header>
+    <div class="mx-auto max-w-full px-3 py-3 sm:px-4 lg:px-6">
+        <div class="row g-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="filterForm" method="GET">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="start_date" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date"
+                                        value="{{ request('start_date') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="end_date" class="form-label">Tanggal Akhir</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date"
+                                        value="{{ request('end_date') }}">
+                                </div>
+                                <div class="col-md-3 d-flex align-items-center justify-content-around">
+                                    <button type="submit" class="btn btn-primary me-2 custom-btn-color">Filter</button>
+                                    <a href="{{ route('laporan.transaksi.penjualan') }}"
+                                        class="btn btn-danger me-2 custom-btn-color">Hapus</a>
+                                    <button type="button" id="printPdfBtn" class="btn btn-info me-2 custom-btn-color">
+                                        Print
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                @if (request('start_date') || request('end_date'))
+                    <div class="alert alert-info">
+                        Menampilkan data dari <strong>{{ request('start_date') }}</strong> sampai
+                        <strong>{{ request('end_date') }}</strong>
+                    </div>
+                @endif
+
+            </div>
+            <!-- Penjualan per Bulan -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-lg-12">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+
+                            </div>
+                            <div id="monthlySalesChart" class="px-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2 ">
+                <div class="card">
+                    <div class="d-flex justify-content-between align-items-center p-3">
+                        <h5 class="mb-0">Daftar Laporan Penjualan</h5>
+                    </div>
+                    <div class="container">
+                        <div class="card-datatable table-responsive">
+                            <table class="datatables table border-top table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Pelanggan</th>
+                                        <th>Total</th>
+                                        <th>Bayar</th>
+                                        <th>Kembalian</th>
+                                        <th>Bukti</th>
+                                        <th>Tanggal</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($transaksis as $key => $t)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $t->pelanggan->nama ?? '-' }}</td>
+                                            <td>Rp{{ number_format($t->total, 0, ',', '.') }}</td>
+                                            <td>Rp{{ number_format($t->bayar, 0, ',', '.') }}</td>
+                                            <td>Rp{{ number_format($t->kembalian, 0, ',', '.') }}</td>
+                                            <td>
+                                                @if ($t->bukti)
+                                                    <img src="{{ asset('storage/' . $t->bukti) }}" alt="bukti"
+                                                        width="50"
+                                                        class="img-thumbnail show-image bg-light p-1 rounded link"
+                                                        data-src="{{ asset('storage/' . $t->bukti) }}">
+                                                @endif
+                                            </td>
+                                            <td>{{ $t->tanggal }}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary btn-detail" data-bs-toggle="modal"
+                                                    data-bs-target="#modalDetail"
+                                                    data-transaksi='@json($t)'
+                                                    data-detail='@json($t->detailTransaksis)'>
+                                                    Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ✅ Modal tunggal -->
+    <div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-body">
+                            {{-- Diisi dengan JS --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal Gambar --}}
+    <div class="modal fade" id="modalImage" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-transparent border-0 text-center">
+                <img src="" class="img-fluid rounded shadow" id="imgPreview" alt="preview">
+            </div>
+        </div>
+    </div>
+    {{--  --}}
+
+@endsection
+
+@section('js')
+    <!-- jQuery (wajib) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        var salesData = {!! json_encode($getsaleschart) !!};
+        var categories = {!! json_encode($categories) !!};
+
+        var options = {
+            series: [{
+                name: 'Penjualan',
+                data: salesData
+            }],
+            chart: {
+                height: 400,
+                type: 'line',
+            },
+            stroke: {
+                width: 5,
+                curve: 'smooth'
+            },
+            xaxis: {
+                categories: categories, // Ganti dengan dinamis dari controller
+                title: {
+                    text: 'Bulan'
+                }
+            },
+            title: {
+                text: 'Laporan Penjualan',
+                align: 'left',
+                style: {
+                    fontSize: "16px",
+                    color: '#666'
+                }
+            },
+            markers: {
+                size: 5,
+                colors: ['#FFA41B'],
+                strokeColors: '#fff',
+                strokeWidth: 2,
+                hover: {
+                    size: 7,
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Penjualan (Rp)'
+                },
+            },
+            colors: ['#FFA41B'],
+        };
+
+        var chart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
+        chart.render();
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.datatables').DataTable({
+                responsive: true,
+                autoWidth: false,
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-detail').forEach(button => {
+                button.addEventListener('click', function() {
+                    const details = JSON.parse(this.dataset.detail);
+                    const body = document.getElementById('detail-body');
+                    body.innerHTML = '';
+
+                    details.forEach(item => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                        <td>${item.produk?.nama ?? '-'}</td>
+                        <td>Rp${parseInt(item.harga).toLocaleString('id-ID')}</td>
+                        <td>${item.jumlah}</td>
+                        <td>Rp${parseInt(item.total).toLocaleString('id-ID')}</td>
+                    `;
+
+                        body.appendChild(row);
+                    });
+                });
+            });
+            // 
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const nama = this.dataset.nama;
+                    const form = document.getElementById('formHapus');
+                    const span = document.getElementById('hapusNama');
+
+                    form.action = `/transaksi-destroy/${id}`; // ganti dengan route sesuai kebutuhan
+                    span.textContent = nama;
+                });
+            });
+        });
+    </script>
+    <script>
+        // Gambar Modal
+        $('.show-image').on('click', function() {
+            const src = $(this).data('src');
+            $('#imgPreview').attr('src', src);
+            $('#modalImage').modal('show');
+        });
+    </script>
+    <script>
+        document.getElementById('printPdfBtn').addEventListener('click', function() {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+
+            // URL akan tetap valid meskipun tanggal kosong
+            const url = `{{ route('transaksi.pdf.penjualan') }}?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        });
+    </script>
+
+@endsection
