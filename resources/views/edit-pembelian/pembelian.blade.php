@@ -307,7 +307,7 @@
                             <input type="hidden" name="total[]" value="${subTotal}">
                             Rp ${subTotal.toLocaleString()}
                         </td>
-                        <td><button type="button" class="btn btn-danger btn-sm delete-btn">-</button></td>
+                        <td><button type="button" class="btn btn-danger btn-sm delete-btn"><i class="bx bx-trash"></i></button></td>
                     </tr>
                 `);
             });

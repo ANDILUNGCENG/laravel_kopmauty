@@ -66,76 +66,101 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr class="text-center" style="background-color : #f8f8f8;">
                                         <td colspan="2"><strong>Pendapatan</strong></td>
                                     </tr>
                                     <tr>
-                                        <td>Penjualan (Pajak)</td>
+                                        <td>Penjualan <small class="fst-italic text-muted">(Pajak)</small></td>
                                         <td>Rp {{ number_format($totalPenjualanPajak, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Penjualan (Non-Pajak)</td>
+                                        <td>Penjualan <small class="fst-italic text-muted">(Non-Pajak)</small></td>
                                         <td>Rp {{ number_format($totalPenjualanNonPajak, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Penjualan (Pajak + Non-Pajak)</td>
-                                        <td class="fw-semibold">Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total Pajak</td>
+                                        <td>Total Pajak Penjualan</td>
                                         <td>Rp {{ number_format($totalPajakPenjualan, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Penjualan (Bersih)</td>
+                                    <tr>
+                                        <td>Total Penjualan <small class="fst-italic text-muted">(Bersih dikurangi
+                                                pajak)</small></td>
                                         <td class="fw-semibold">Rp {{ number_format($totalPenjualanBersih, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td><strong>Pendapatan Penjualan</strong> <small
+                                                class="fst-italic text-muted">(Pajak + Non-Pajak)</small></td>
+                                        <td class="fw-semibold">Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</td>
+                                    </tr>
+                                    <td> <strong>Modal Barang </strong>
+                                        <em><small class="text-muted">(Modal pembelian barang
+                                                yang sudah
+                                                terjual)</small></em>
+                                    </td>
+                                    <td class="fw-semibold">Rp -
+                                        {{-- murni modal pembelian yang barangnya sudah terjual ini modal beli ya bukan keuntungan harga beli --}}
+                                    </td>
+                                    </tr>
+                                    <tr class="text-center" style="background-color : #f8f8f8;">
                                         <td colspan="2"><strong>Pembelian</strong></td>
                                     </tr>
                                     <tr>
-                                        <td>Pembelian (Pajak)</td>
+                                        <td>Pembelian <small class="fst-italic text-muted">(Pajak)</small></td>
                                         <td>Rp {{ number_format($totalPembelianPajak, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Pembelian (Non-Pajak)</td>
+                                        <td>Pembelian <small class="fst-italic text-muted">(Non-Pajak)</small></td>
                                         <td>Rp {{ number_format($totalPembelianNonPajak, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Pembelian (Pajak + Non-Pajak)</td>
-                                        <td class="fw-semibold">Rp {{ number_format($totalPembelian, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total Pajak</td>
+                                        <td>Total Pajak Pembelian</td>
                                         <td>Rp {{ number_format($totalPajakPembelian, 0, ',', '.') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Pembelian (Bersih)</td>
+                                        <td>Total Pembelian <small class="fst-italic text-muted">(Bersih dikurangi
+                                                pajak)</small></td>
                                         <td class="fw-semibold">Rp {{ number_format($totalPembelianBersih, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><strong class="fs-5">Potensi Laba</strong> <small>(Jika
-                                                semua Barang Terjual)</small></td>
+                                        <td><strong>Modal Pembelian</strong> <small class="fst-italic text-muted">(Pajak +
+                                                Non-Pajak)</small></td>
+                                        <td class="fw-semibold">Rp {{ number_format($totalPembelian, 0, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Modal Tertahan</strong> <small class="fst-italic text-muted">(Modal
+                                                pembelian
+                                                barang yang belum terjual)</small> </td>
+                                        <td class="fw-semibold">Rp -()
+                                            {{-- murni modal pembelian yang barangnya masih di stok jadi barannya aja ya beli (harga beli) --}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"><strong class="fs-5">Potensi Laba</strong> <small
+                                                class="fst-italic text-muted">(Laba jika
+                                                semua barang terjual)</small></td>
                                         <td class="text-start"><strong class="fs-5">Rp
                                                 {{ number_format($potensiLaba, 0, ',', '.') }}</strong></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><strong class="fs-5">Laba Sekarang</strong>
-                                            <small>(Berdasarkan Barang Yang Terjual)</small></td>
+                                        <td class="text-center"><strong class="fs-5">Laba Realisasi</strong>
+                                            <small class="fst-italic text-muted">(Laba barang yang sudah terjual)</small>
+                                        </td>
                                         <td class="text-start"><strong class="fs-5">Rp
                                                 {{ number_format($totalLabaPenjualan, 0, ',', '.') }}</strong></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><strong class="fs-5">Selisih Pajak</strong> <small>(Pajak
-                                                Penjualan - Pajak Pembelian)</small></td>
+                                        <td class="text-center"><strong class="fs-5">Selisih Pajak</strong> <small
+                                                class="fst-italic text-muted">(Pajak
+                                                penjualan dikurangi pajak pembelian)</small></td>
                                         <td class="text-start"><strong class="fs-5">Rp
                                                 {{ number_format($totalSelisihPajak, 0, ',', '.') }}</strong></td>
                                     </tr>
                                 </tbody>
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th class="text-center fs-5"><strong>Laba</strong></th>
+                                        <th class="text-center fs-5"><strong>Posisi Laba</strong></th>
                                         <th class="text-end fs-5"><strong>Rp
                                                 {{ number_format($laba, 0, ',', '.') }}</strong></th>
                                     </tr>

@@ -576,7 +576,7 @@ class TransaksiController extends Controller
         $pelanggans = Pelanggan::all();
         $pembayarans = Pembayaran::all();
         $pajaks = Pajak::all();
-        $produks = Produk::paginate(12);
+        $produks = Produk::paginate(15);
         $produks_all = Produk::all();
         $userId = auth()->id();
         $keranjangs = DetailTransaksi::with('produk')->where('transaksi_id', $id)->get();

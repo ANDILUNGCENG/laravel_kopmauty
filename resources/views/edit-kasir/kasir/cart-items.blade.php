@@ -41,10 +41,12 @@
 
                 if (target.classList.contains('btn-plus')) {
                     let tempQty = newQty + 1;
+                    console.log('newQty' + newQty);
+                    console.log('tempQty' + tempQty);
                     if (tempQty > stock) {
                         showToast('Jumlah melebihi stok yang tersedia!', 'danger');
                     }
-                    newQty = stock;
+                    newQty = tempQty;
                 } else if (target.classList.contains('btn-minus')) {
                     let tempQty = Math.max(newQty - 1, 1);
                     if (tempQty === newQty) {

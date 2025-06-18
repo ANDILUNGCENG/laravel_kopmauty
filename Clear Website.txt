@@ -1,0 +1,5 @@
+Copy & paste di teriminal
+
+php artisan optimize:clear
+
+
